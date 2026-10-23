@@ -16,6 +16,8 @@ estimated dB level and its category are kept.
 
 ## Architecture (report §4.1)
 
+📘 For a full explanation of every technology used and why, see **[TECHNOLOGIES.md](TECHNOLOGIES.md)**.
+
 ```
  ┌──────────── Hardware layer ────────────┐      ┌──────────────── Server (FastAPI) ────────────────┐
  │ Arduino Uno                            │      │ Service layer (app/services)                     │
