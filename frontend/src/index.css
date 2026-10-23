@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: 244 246 251;
+  --surface: 255 255 255;
+  --line: 15 23 42;
+  --fg: 12 18 32;
+  --muted: 92 102 124;
+  --safe: 5 170 130;
+  --info: 37 99 235;
+  --warn: 217 119 6;
+  --crit: 225 29 72;
+  --violet: 109 82 245;
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --grid: rgba(15, 23, 42, 0.05);
+  color-scheme: light;
+}
+
+.dark {
+  --ink: 7 11 20;
+  --surface: 18 24 38;
+  --line: 255 255 255;
+  --fg: 236 241 250;
+  --muted: 140 152 178;
+  --safe: 52 245 197;
+  --info: 96 165 250;
+  --warn: 251 191 36;
+  --crit: 251 77 109;
+  --violet: 151 135 255;
+  --glass: rgba(20, 27, 44, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --grid: rgba(255, 255, 255, 0.035);
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-ink text-fg font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+.grid-bg {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+}
+
+.num {
+  @apply font-mono tabular-nums;
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, rgb(var(--safe)), rgb(var(--violet)) 60%, rgb(var(--info)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgb(var(--line) / 0.04), rgb(var(--line) / 0.1), rgb(var(--line) / 0.04));
+  background-size: 200% 100%;
+  @apply animate-shimmer rounded-xl;
+}
+
+@layer components {
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition
+    active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
+}
+.btn-primary {
+  @apply btn text-ink;
+  background: linear-gradient(110deg, rgb(var(--safe)), rgb(var(--violet)));
+  box-shadow: 0 8px 30px -10px rgb(var(--safe) / 0.6);
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+.btn-ghost {
+  @apply btn border border-line/10 bg-line/[0.03] hover:bg-line/[0.07];
+}
+.btn-danger {
+  @apply btn bg-crit text-white hover:brightness-110;
+}
+
+.input {
+  @apply w-full rounded-xl border border-line/10 bg-line/[0.03] px-3.5 py-2.5 text-sm outline-none transition
+    placeholder:text-muted/70 focus:border-safe/60 focus:ring-4 focus:ring-safe/10;
+}
+.label {
+  @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted;
+}
+}
+
+/* Leaflet theming */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(195deg) brightness(0.82) contrast(0.92) saturate(0.55);
+}
+.leaflet-container {
+  background: rgb(var(--ink));
+  font-family: inherit;
+}
+.leaflet-control-attribution {
+  background: rgb(var(--ink) / 0.7) !important;
+  color: rgb(var(--muted)) !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a {
+  color: rgb(var(--muted)) !important;
+}
+.leaflet-bar a {
+  background: rgb(var(--surface)) !important;
+  color: rgb(var(--fg)) !important;
+  border-color: rgb(var(--line) / 0.1) !important;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgb(var(--surface));
+  color: rgb(var(--fg));
+}
+
+.child-marker {
+  position: relative;
+}
+.child-marker .dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 3px solid white;
+  box-shadow: 0 0 0 4px rgb(var(--safe) / 0.35), 0 6px 20px rgb(0 0 0 / 0.4);
+}
+.child-marker .pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  @apply animate-ping2;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--line) / 0.12);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

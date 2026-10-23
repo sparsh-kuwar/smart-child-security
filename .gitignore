@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/data/
+*.db
+*.db-*
+.env
+.DS_Store
+hardware/esp8266_bridge/config.h
