@@ -8,7 +8,7 @@ SafeTrack combines RFID attendance, GPS geofencing, ambient sound-level sensing,
 **Trust Score** into one live dashboard for parents. **Raw audio is never recorded, stored or transmitted.** Only an
 estimated dB level and its category are kept.
 
-> **Try it:** open the deployed app and click **"Try the live demo"**. A virtual device plays a compressed school day
+> **Try it:** deploy it with the button under [Deploy](#deploy) (or run it locally), open the app and click **"Try the live demo"**. A virtual device plays a compressed school day
 > on a loop. Open **Device lab** to inject any of the report's test scenarios (SOS, leaving a safe zone, sustained loud
 > noise, GPS loss, unregistered RFID, network loss, and more) and watch the dashboard react live.
 
@@ -87,12 +87,52 @@ cd backend && .venv/bin/pip install pytest && .venv/bin/python -m pytest -q
 scoring, the Trust Score (including the §5.3 case study), RFID registered / unregistered / duplicate, SOS, the
 critical combo scenario, GPS loss, restart, commands, and API authorisation.
 
-## Deploy (Render)
+## Deploy
 
-The repo ships a `Dockerfile` and a `render.yaml` blueprint: **Render → New → Blueprint → pick this repo**.
-The free plan works. Note that the free plan's disk is temporary, so data resets when the service restarts and the
-demo account is re-created automatically. To keep data across restarts, attach a Render Postgres database and set
-`DATABASE_URL`.
+### Option 1: one-click deploy to Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/sparsh-kuwar/smart-child-security)
+
+1. Click the button and sign in to Render. Sign in with GitHub, or connect GitHub under **Account Settings → Git providers**.
+2. If the repo is private, give Render's GitHub app access to `smart-child-security` when asked.
+3. Render reads `render.yaml`: one free Docker web service in Singapore with a generated `SECRET_KEY`. Click **Apply**.
+4. The first build takes about 5–8 minutes. Open the `https://<name>.onrender.com` URL and click **Try the live demo**.
+
+### Option 2: Render Blueprint from the dashboard
+
+**Render → New → Blueprint →** pick this repo → **Apply**. This uses the same `render.yaml` as the button.
+
+### Option 3: Render web service (manual)
+
+**Render → New → Web Service →** pick this repo, then set:
+
+| Setting | Value |
+|---|---|
+| Runtime / Language | Docker |
+| Dockerfile path | `./Dockerfile` |
+| Instance type | Free |
+| Health check path | `/api/health` |
+| Environment variables | `SECRET_KEY` = any long random string, `APP_TIMEZONE` = `Asia/Kolkata` |
+
+Pushes to `main` redeploy automatically.
+
+> **Free-plan notes:** the service sleeps after 15 minutes without traffic, and the first request after that takes
+> about 30–60 s to wake it. The free disk is temporary, so data resets on every restart or redeploy. The demo account
+> is re-created automatically. To keep accounts permanently, create a Render Postgres database and set its
+> *Internal Database URL* as `DATABASE_URL`. Keep the service at **one instance**, because the simulator and the live
+> updates run inside the process.
+
+### Option 4: local Docker
+
+```bash
+docker build -t safetrack .
+docker volume create safetrack-data
+docker run -d --name safetrack --restart unless-stopped -p 8080:8000 \
+  -v safetrack-data:/app/data -e SECRET_KEY="$(openssl rand -hex 32)" safetrack
+# open http://localhost:8080
+```
+
+### Environment variables
 
 | Env var | Purpose |
 |---|---|
